@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col">
-        <h1>Local Weather</h1>
+        <h1>Regional Weather</h1>
         Current UV Index:  <a href="https://www.epa.gov/sunsafety/uv-index-scale-0">{{ todayUltraviolet?.UV_INDEX }}</a>
         <div class="row">
             <div class="col">
@@ -126,6 +126,28 @@
                     </div>
                     <div class="card-body">
                         <img src="https://radar.weather.gov/ridge/standard/CONUS_loop.gif" alt="NWS CONUS Radar Animation">
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        UV Alert Forecast (experimental)
+                    </div>
+                    <div class="card-body">
+                        <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uv_alert_usa.png" alt="CONUS UV Alert Map">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        UV Index Forecast
+                    </div>
+                    <div class="card-body">
+                        <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uvi_map.png" alt="CONUS UV Index Forecast">
                     </div>
                 </div>
             </div>
