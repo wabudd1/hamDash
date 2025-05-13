@@ -7,7 +7,8 @@ import { IEpaUltraviolet } from '../models/iEpaUltraviolet';
   standalone: true,
   imports: [],
   templateUrl: './dash.component.html',
-  styleUrl: './dash.component.scss'
+  styleUrl: './dash.component.scss',
+  providers: [ApiService]
 })
 export class DashComponent implements OnInit {
   public todayUltraviolet?: IEpaUltraviolet;
