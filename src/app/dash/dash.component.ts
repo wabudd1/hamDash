@@ -22,8 +22,12 @@ export class DashComponent implements OnInit {
 
   private loadCurrentUvIndex(): void {
     this.api.getCurrentUv(28806).subscribe({
-      next: data => this.todayUltraviolet = data,
-      error: err => console.error('UV index borked:  ' + err)
+      next: data => {
+        this.todayUltraviolet = data[0];
+      },
+      error: err => {
+        console.error('UV index borked:  ' + err);
+      }
     });
   }
 }

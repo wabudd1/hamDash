@@ -16,7 +16,7 @@ export class ApiService {
    * @param zipCode 5 digit ZIP code
    * @returns Object containing current UV index and UV alert for the ZIP code
    */
-  public getCurrentUv(zipCode: number): Observable<IEpaUltraviolet> {
-    return this.http.get<IEpaUltraviolet>("https://data.epa.gov/efservice/getEnvirofactsUVDaily/ZIP/" + zipCode + "/JSON");
+  public getCurrentUv(zipCode: number): Observable<IEpaUltraviolet[]> {
+    return this.http.get<IEpaUltraviolet[]>("https://data.epa.gov/efservice/getEnvirofactsUVDaily/ZIP/" + zipCode + "/JSON");
   }
 }
