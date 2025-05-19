@@ -9,7 +9,6 @@ import { parse, lightFormat } from 'date-fns';
 import { GraphDatumColor } from '../models/GraphDatumColor';
 import { Constants } from '../constants';
 import { INwsRoot } from '../models/nws/iNwsRoot';
-import { ReplaySubject } from 'rxjs';
 import convert from 'convert';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -241,6 +240,11 @@ export class DashComponent implements OnInit {
     return convertedUnit;
   }
 
+  /**
+   * Converts an angle in degrees into a cardinal direction.
+   * @param degrees Angle degrees (0 - 360) from a wind direction measurement
+   * @returns string abbreviated cardinal direction
+   */
   private getDirectionFromAngle(degrees: number): string {
     let cardinalDirection = "";
 
@@ -288,6 +292,11 @@ export class DashComponent implements OnInit {
     })
   }
 
+  /**
+   * Fetches alerts for the Zones defined in constants.#006600
+   * TODO:  Currently only grabs one.  Not sure how burdensome it is to
+   * be pulling ~15 per page load.
+   */
   private fetchWeatherAlerts(): void {
     // TODO:  SetTimeout, while loop for constant refresh
     // TODO:  Should all zones be fetched at the same time?
@@ -301,6 +310,11 @@ export class DashComponent implements OnInit {
     });
   }
 
+  /**
+   * Fetches available stations for the Zones defined in constants.
+   * TODO:  Currently only grabs one.  Not sure how burdensome it is
+   * to be pulling ~15 stations and their observations per page load.
+   */
   private fetchStations(): void {
     this.api.getStationsForZone(Constants.relevantWeatherZones[0].code).subscribe({
         next: data => {
@@ -312,6 +326,12 @@ export class DashComponent implements OnInit {
       });
   }
 
+  /**
+   * Retrieves the latest observation data from a given station and shoves
+   * it into the global array of observations for display in a table.
+   * 
+   * @param stationId ID of the station, such as "KAVL"
+   */
   private fetchLatestObservations(stationId: string): void {
     this.api.getLatestStationObservation(stationId).subscribe({
       next: data => {

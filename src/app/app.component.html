@@ -1,7 +1,17 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col">
-            <ham-dash></ham-dash>
+            <ul ngbNav #nav="ngbNav" class="nav-tabs">
+                <li ngbNavItem>
+                    <button ngbNavLink>Main Dashboard</button>
+                    <ng-template ngbNavContent><ham-dash></ham-dash></ng-template>
+                </li>
+                <li ngbNavItem>
+                    <button ngbNavLink>Resources</button>
+                    <ng-template ngbNavContent><ham-em-info></ham-em-info></ng-template>
+                </li>
+            </ul>
+            <div [ngbNavOutlet]="nav"></div>
         </div>
     </div>
 </div>

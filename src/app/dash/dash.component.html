@@ -48,9 +48,6 @@
                                         <th scope="col">Wind Gust</th>
                                         <th scope="col">Pressure</th>
                                         <th scope="col">Visibility</th>
-                                        <!-- These values don't exist anywhere ??? -->
-                                        <!-- <th scope="col">Max temp last 24 hrs</th>
-                                        <th scope="col">Min temp last 24 hrs</th> -->
                                         <th scope="col">Precip last hour</th>
                                         <th scope="col">Precip last 3 hrs</th>
                                         <th scope="col">Precip last 6 hrs</th>
@@ -139,13 +136,6 @@
                                             {{ station.properties.visibility.qualityControl }}
                                         </button>
                                     </td>
-                                    <!-- These values don't exist anywhere ??? -->
-                                    <!-- <td>
-                                        {{ parseUnitValue(station.properties.maxTemperatureLast24Hours.unitCode, station.properties.maxTemperatureLast24Hours.value) }}
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.minTemperatureLast24Hours.unitCode, station.properties.minTemperatureLast24Hours.value) }}
-                                    </td> -->
                                     <td>
                                         {{ parseUnitValue(station.properties.precipitationLastHour.unitCode, station.properties.precipitationLastHour.value) }}
                                         <button type="button"
