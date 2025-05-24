@@ -19,7 +19,7 @@
     "@angular/platform-browser": "^19.2.13",
     "@angular/platform-browser-dynamic": "^19.2.13",
     "@angular/router": "^19.2.13",
-    "@ng-bootstrap/ng-bootstrap": "17.0.1",
+    "@ng-bootstrap/ng-bootstrap": "18.0.0",
     "@popperjs/core": "^2.11.8",
     "@swimlane/ngx-charts": "^22.0.0",
     "bootstrap": "^5.3.2",
