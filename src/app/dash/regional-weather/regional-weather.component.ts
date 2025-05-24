@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -11,8 +11,7 @@ import { INwsRoot } from '../../models/nws/iNwsRoot';
 import { Constants, WeatherZone } from '../../constants';
 import { AlertsModalComponent } from '../alerts-modal/alerts-modal.component';
 import { lightFormat, parse } from 'date-fns';
-import convert from 'convert';
-import { forkJoin, Observable } from 'rxjs';
+import { convert } from 'convert';
 import { GraphData } from '../../models/GraphData';
 
 @Component({
@@ -23,15 +22,16 @@ import { GraphData } from '../../models/GraphData';
     styleUrl: './regional-weather.component.scss',
     providers: [ApiService]
 })
-export class RegionalWeatherComponent {
-
+export class RegionalWeatherComponent implements OnInit {
   public readonly weatherZones: WeatherZone[] = Constants.relevantWeatherZones;
   public selectedWeatherZoneCode: string = "";
+  public zoneStationLimit: number = 10;
   public latestStationObservations: INwsRoot[] = [];
 
   public apiDelayMinutes: number = 15;
 
   public weatherAlertCount: number = 0;
+  public weatherZoneErrorCount: number = 0;
   public weatherAlertTimestamp?: Date;
   public weatherAlertZones: INwsRoot[] = [];
 
@@ -67,11 +67,21 @@ export class RegionalWeatherComponent {
   public xAxisLabel: string = "Day";
   public yAxisLabel: string = "UV Index";
 
-  constructor(private api: ApiService, private modalService: NgbModal) {
-    
+  constructor(private api: ApiService, private modalService: NgbModal) {  }
+
+  ngOnInit(): void {
+    this.fetchWeatherAlerts();
+
+    // TODO:  Add ZIP code input.
+    this.loadCurrentUvIndex();
+    this.loadUvIndexForecast();
   }
 
-  public onObservationZoneChange(): void {
+  /**
+   * Called when the user selects an Observation Zone for the Current Observations table.
+   * Loads data from the relevant stations within that zone.
+   */
+  public onObservationsLoadClick(): void {
     if (this.selectedWeatherZoneCode != null && this.selectedWeatherZoneCode.length > 0) {
       this.fetchZoneObservations(this.selectedWeatherZoneCode);
     }
@@ -293,6 +303,7 @@ export class RegionalWeatherComponent {
     this.api.getTodayHourlyUv(28806).subscribe({
       next: data => {
         this.hourlyUltraviolet = data;
+        // TODO:  Remove data for pre-dawn/post-dusk hours.  Why would this ZIP code ever have UV light after 9pm at any time of year???
         this.latestHourlyForecastDate = lightFormat(this.parseEpaDateTimeString(this.hourlyUltraviolet[0].DATE_TIME), "MM/dd hh");
         this.uvGraphData = this.epaDataToGraph(this.hourlyUltraviolet);
         this.uvGraphColors = [];
@@ -314,23 +325,20 @@ export class RegionalWeatherComponent {
   private fetchWeatherAlerts(): void {
     // TODO:  SetTimeout, while loop for constant refresh
     // TODO:  Should all zones be fetched at the same time?
-    let apiCalls: Observable<INwsRoot>[] = [];
+    this.weatherAlertZones = [];
+    this.weatherAlertCount = 0;
     Constants.relevantWeatherZones.forEach(val => {
-      apiCalls.push(this.api.getWeatherAlerts(val.code));
-    });
-    forkJoin(apiCalls).subscribe({
-      next: data => {
-        this.weatherAlertZones = data;
-        let alertCount = 0;
-        data.forEach(zone => {
-          alertCount += zone.features.length;
-        });
-        this.weatherAlertCount = alertCount;
-        this.weatherAlertTimestamp = new Date();
-      },
-      error: err => {
-        console.log(err);
-      }
+      this.api.getWeatherAlerts(val.code).subscribe({
+        next: alertZone => {
+          this.weatherAlertZones.push(alertZone);
+          this.weatherAlertCount += alertZone.features.length;
+          this.weatherAlertTimestamp = new Date();
+        },
+        error: err => {
+          console.log(err);
+        }
+      });
+      
     });
   }
 
@@ -348,21 +356,24 @@ export class RegionalWeatherComponent {
     return date;
   }
 
+  /**
+   * Calls the API to obtain Current Observation data for each station
+   * in the given zone.
+   * @param zoneCode NWS Zone Code e.g., "NCZ053"
+   */
   private fetchZoneObservations(zoneCode: string): void {
     this.latestStationObservations = [];
-    this.api.getStationsForZone(zoneCode).subscribe({
+    this.api.getStationsForZone(zoneCode, this.zoneStationLimit).subscribe({
         next: stations => {
-          let apiCalls: Observable<INwsRoot>[] = [];
           stations.features.forEach(val => {
-            apiCalls.push(this.api.getLatestStationObservation(val.properties.id));
-          });
-          forkJoin(apiCalls).subscribe({
-            next: observation => {
-              this.latestStationObservations.concat(observation);
-            },
-            error: err => {
-              console.log(err);
-            }
+            this.api.getLatestStationObservation(val.properties.stationIdentifier).subscribe({
+              next: station => {
+                this.latestStationObservations.push(station);
+              },
+              error: err => {
+                console.log(err);
+              }
+            });
           });
         },
         error: err => {

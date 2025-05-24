@@ -1,15 +1,15 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col">
-            <ul ngbNav #nav="ngbNav" class="nav-tabs">
+            <ul ngbNav #nav="ngbNav" class="nav-pills my-2" [destroyOnHide]="false" >
                 <li ngbNavItem>
-                    <button type="button" class="btn btn-primary" ngbNavLink>Main Dashboard</button>
+                    <button type="button" ngbNavLink>Main Dashboard</button>
                     <ng-template ngbNavContent>
                         <ham-dash></ham-dash>
                     </ng-template>
                 </li>
                 <li ngbNavItem>
-                    <button type="button" class="btn btn-primary" ngbNavLink>Resources</button>
+                    <button type="button" ngbNavLink>Resources</button>
                     <ng-template ngbNavContent>
                         <ham-em-info></ham-em-info>
                     </ng-template>

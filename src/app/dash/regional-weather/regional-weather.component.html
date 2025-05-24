@@ -1,10 +1,24 @@
-<div class="row text-center">
+<div id="regionalWeatherTop" class="row text-center">
+
     <div class="col">
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-header">
-                Active Weather Alerts:  {{ weatherAlertCount }}
+                <h2>NWS Greenville-Spartanburg RADAR animation</h2>
+            </div>
+            <div class="card-body">
+                <img src="https://radar.weather.gov/ridge/standard/KGSP_loop.gif" alt="NWS RADAR animation" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2>National Weather Service Alerts</h2>
             </div>
             <div class="card-body" *ngIf="weatherAlertCount > 0">
+                <p>{{ weatherAlertCount }} active alerts in {{ weatherZones.length }} zones specified.</p>
+                <p *ngIf="weatherZoneErrorCount > 0">{{ weatherZoneErrorCount }} zone returned an error.</p>
                 <ng-container *ngFor="let weatherZone of weatherAlertZones">
                     <div class="row" *ngIf="weatherZone.features.length > 0">
                         <div class="col">
@@ -22,265 +36,272 @@
                 Last checked:  {{ datetoFormattedString(weatherAlertTimestamp) }}
             </div>
         </div>
+    </div>
+    
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-header">
+                NOAA GOES-19 Geocolor Composite Animation - South East
+            </div>
+            <div class="card-body">
+                <img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/se/GEOCOLOR/GOES19-SE-GEOCOLOR-600x600.gif" alt="NOAA GOES-19 Geocolor Composite Animation" class="img-fluid">
+            </div>
+        </div>
+    </div>
 
-        <div class="row">
-            <div class="col">
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2>NWS GSP Weather Story</h2>
+            </div>
+            <div class="card-body">
+                <img src="https://www.weather.gov/images/gsp/weatherstory.gif" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
+</div><!-- End Row 1 -->
+
+<div class="row text-center">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2>UV Index Hourly Forecast</h2>
+                </div>
+                <div class="card-body">
+                    <ngx-charts-bar-vertical
+                        [view]="view"
+                        [results]="uvGraphData"
+                        [animations]="false"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [legend]="false"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                        [customColors]="uvGraphColors">
+                    </ngx-charts-bar-vertical>
+                </div>
+                <div class="card-footer">
+                    Today's forecasted UV index:  <img [src]="'./assets/' + getUvIndexImage()" [alt]="'Forecasted UV Index of ' + this.todayUltraviolet?.UV_INDEX">
+                </div>
+            </div>
+        </div>
+</div><!-- End Row 2 -->
+
+<div class="row text-center">
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-header">
                 <h2>Latest Observations</h2>
-                
-                <select class="form-select" aria-label="Weather zone selection for loading observations" [(ngModel)]="selectedWeatherZoneCode" (ngModelChange)="onObservationZoneChange()">
-                    <option selected disabled value="">Select a zone</option>
-                    <option *ngFor="let zone of weatherZones" [ngValue]="zone.code">{{ zone.name }}</option>
-                </select>
-
-                <ng-container *ngFor="let station of latestStationObservations">
-                    <div class="row">
-                        <div class="col">
-                            <table class="table table-bordered table-striped table-striped-columns">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Station</th>
-                                        <th scope="col">Time</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Temperature</th>
-                                        <th scope="col">Dewpoint</th>
-                                        <th scope="col">Wind Direction</th>
-                                        <th scope="col">Wind Speed</th>
-                                        <th scope="col">Wind Gust</th>
-                                        <th scope="col">Pressure</th>
-                                        <th scope="col">Visibility</th>
-                                        <th scope="col">Precip last hour</th>
-                                        <th scope="col">Precip last 3 hrs</th>
-                                        <th scope="col">Precip last 6 hrs</th>
-                                        <th scope="col">Rel Hum</th>
-                                        <th scope="col">Windchill</th>
-                                        <th scope="col">Heat Index</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <td>
-                                        {{ station.properties.station.substring(33) }}
-                                    </td>
-                                    <td>
-                                        {{ formatNwsDate(station.properties.timestamp) }}
-                                    </td>
-                                    <td>
-                                        {{ station.properties.textDescription }}
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.temperature.unitCode, station.properties.temperature.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.temperature.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.temperature.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.dewpoint.unitCode, station.properties.dewpoint.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.dewpoint.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.dewpoint.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.windDirection.unitCode, station.properties.windDirection.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.windDirection.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.windDirection.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.windSpeed.unitCode, station.properties.windSpeed.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.windSpeed.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.windSpeed.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.windGust.unitCode, station.properties.windGust.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.windGust.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.windGust.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.barometricPressure.unitCode, station.properties.barometricPressure.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.barometricPressure.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.barometricPressure.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.visibility.unitCode, station.properties.visibility.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.visibility.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.visibility.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.precipitationLastHour.unitCode, station.properties.precipitationLastHour.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.precipitationLastHour.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.precipitationLastHour.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.precipitationLast3Hours.unitCode, station.properties.precipitationLast3Hours.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.precipitationLast3Hours.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.precipitationLast3Hours.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.precipitationLast6Hours.unitCode, station.properties.precipitationLast6Hours.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.precipitationLast6Hours.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.precipitationLast6Hours.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.relativeHumidity.unitCode, station.properties.relativeHumidity.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.relativeHumidity.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.relativeHumidity.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.windChill.unitCode, station.properties.windChill.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.windChill.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.windChill.qualityControl }}
-                                        </button>
-                                    </td>
-                                    <td>
-                                        {{ parseUnitValue(station.properties.heatIndex.unitCode, station.properties.heatIndex.value) }}
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                title="Click to explain"
-                                                [ngbPopover]="getQualityControlExplainer(station.properties.heatIndex.qualityControl)"
-                                                popoverTitle="Quality Control Descriptor">
-                                            {{ station.properties.heatIndex.qualityControl }}
-                                        </button>
-                                    </td>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </ng-container>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <h2>Forecasts</h2>
-                
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        NWS Greenville-Spartanburg RADAR animation
-                    </div>
-                    <div class="card-body">
-                        <img src="https://radar.weather.gov/ridge/standard/KGSP_loop.gif" alt="NWS RADAR animation" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        NOAA GOES-19 Geocolor Composite Animation - South East
-                    </div>
-                    <div class="card-body">
-                        <img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/se/GEOCOLOR/GOES19-SE-GEOCOLOR-600x600.gif" alt="NOAA GOES-19 Geocolor Composite Animation" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-        </div><!-- End Row 1 of Local Weather-->
-
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        NWS GSP Weather Story
-                    </div>
-                    <div class="card-body">
-                        <img src="https://www.weather.gov/images/gsp/weatherstory.gif" class="img-fluid">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">
-                            I don't remember what I was going to put here.
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="col-4">
+                        <div class="input-group">
+                            <span class="input-group-text">Weather Zone</span>
+                            <select id="obsZoneSelect" class="form-select" aria-label="Weather zone selection for loading observations" [(ngModel)]="selectedWeatherZoneCode">
+                                <option selected disabled value=""></option>
+                                <option *ngFor="let zone of weatherZones" [ngValue]="zone.code">{{ zone.name }}</option>
+                            </select>
+                            <span class="input-group-text"># of stations</span>
+                            <input id="maxZoneCountInput" type="number" class="form-control" [(ngModel)]="zoneStationLimit" />
+                            <button type="button" class="btn btn-primary" (click)="onObservationsLoadClick()">Load</button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        UV Index Hourly Forecast
+                <div class="row">
+                    <div class="col">
+                        <span *ngIf="selectedWeatherZoneCode != null && selectedWeatherZoneCode.length > 0 && latestStationObservations.length == 0">
+                            No weather observations to display.
+                        </span>
+                        <span *ngIf="selectedWeatherZoneCode == null || selectedWeatherZoneCode.length == 0">
+                            Select a zone to load weather observations.
+                        </span>
                     </div>
-                    <div class="card-body">
-                        <ngx-charts-bar-vertical
-                            [view]="view"
-                            [results]="uvGraphData"
-                            [animations]="false"
-                            [xAxis]="true"
-                            [yAxis]="true"
-                            [legend]="false"
-                            [showXAxisLabel]="true"
-                            [showYAxisLabel]="true"
-                            [xAxisLabel]="xAxisLabel"
-                            [yAxisLabel]="yAxisLabel"
-                            [customColors]="uvGraphColors">
-                        </ngx-charts-bar-vertical>
-                    </div>
-                    <div class="card-footer">
-                        Today's forecasted UV index:  <img [src]="'./assets/' + getUvIndexImage()" [alt]="'Forecasted UV Index of ' + this.todayUltraviolet?.UV_INDEX">
+                </div>
+                <div class="row" *ngIf="latestStationObservations.length > 0">
+                    <div class="col">
+                        <ng-container *ngFor="let station of latestStationObservations">
+                            <div class="row">
+                                <div class="col">
+                                    <table class="table table-bordered table-striped table-striped-columns">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Station</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Description</th>
+                                                <th scope="col">Temperature</th>
+                                                <th scope="col">Dewpoint</th>
+                                                <th scope="col">Wind Direction</th>
+                                                <th scope="col">Wind Speed</th>
+                                                <th scope="col">Wind Gust</th>
+                                                <th scope="col">Pressure</th>
+                                                <th scope="col">Visibility</th>
+                                                <th scope="col">Precip last hour</th>
+                                                <th scope="col">Precip last 3 hrs</th>
+                                                <th scope="col">Precip last 6 hrs</th>
+                                                <th scope="col">Rel Hum</th>
+                                                <th scope="col">Windchill</th>
+                                                <th scope="col">Heat Index</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <td>
+                                                {{ station.properties.station.substring(33) }}
+                                            </td>
+                                            <td>
+                                                {{ formatNwsDate(station.properties.timestamp) }}
+                                            </td>
+                                            <td>
+                                                {{ station.properties.textDescription }}
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.temperature.unitCode, station.properties.temperature.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.temperature.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.temperature.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.dewpoint.unitCode, station.properties.dewpoint.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.dewpoint.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.dewpoint.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.windDirection.unitCode, station.properties.windDirection.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.windDirection.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.windDirection.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.windSpeed.unitCode, station.properties.windSpeed.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.windSpeed.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.windSpeed.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.windGust.unitCode, station.properties.windGust.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.windGust.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.windGust.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.barometricPressure.unitCode, station.properties.barometricPressure.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.barometricPressure.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.barometricPressure.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.visibility.unitCode, station.properties.visibility.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.visibility.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.visibility.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.precipitationLastHour.unitCode, station.properties.precipitationLastHour.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.precipitationLastHour.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.precipitationLastHour.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.precipitationLast3Hours.unitCode, station.properties.precipitationLast3Hours.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.precipitationLast3Hours.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.precipitationLast3Hours.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.precipitationLast6Hours.unitCode, station.properties.precipitationLast6Hours.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.precipitationLast6Hours.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.precipitationLast6Hours.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.relativeHumidity.unitCode, station.properties.relativeHumidity.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.relativeHumidity.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.relativeHumidity.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.windChill.unitCode, station.properties.windChill.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.windChill.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.windChill.qualityControl }}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {{ parseUnitValue(station.properties.heatIndex.unitCode, station.properties.heatIndex.value) }}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                        title="Click to explain"
+                                                        [ngbPopover]="getQualityControlExplainer(station.properties.heatIndex.qualityControl)"
+                                                        popoverTitle="Quality Control Descriptor">
+                                                    {{ station.properties.heatIndex.qualityControl }}
+                                                </button>
+                                            </td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </ng-container>
                     </div>
                 </div>
             </div>
         </div>
 
-    </div><!-- End Weather Col -->
-</div><!-- End Weather Row -->
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <a href="#regionalWeatherTop">Back to top</a>
+    </div>
+</div>

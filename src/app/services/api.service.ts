@@ -30,8 +30,8 @@ export class ApiService {
     return this.http.get<INwsRoot>("https://api.weather.gov/alerts/active/zone/" + zoneCode);
   }
 
-  public getStationsForZone(zoneCode: string): Observable<INwsRoot> {
-    return this.http.get<INwsRoot>("https://api.weather.gov/zones/forecast/" + zoneCode + "/stations?limit=5");
+  public getStationsForZone(zoneCode: string, stationLimit: number): Observable<INwsRoot> {
+    return this.http.get<INwsRoot>("https://api.weather.gov/zones/forecast/" + zoneCode + "/stations?limit=" + stationLimit);
   }
 
   public getLatestStationObservation(stationId: string): Observable<INwsRoot> {
