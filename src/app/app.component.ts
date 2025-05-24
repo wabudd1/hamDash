@@ -4,10 +4,10 @@ import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { EmInfoComponent } from "./em-info/em-info.component";
 
 @Component({
-  selector: 'ham-root',
-  standalone: true,
-  templateUrl: './app.component.html',
-  styles: [],
-  imports: [DashComponent, NgbNavModule, EmInfoComponent],
+    standalone: true,
+    selector: 'ham-root',
+    templateUrl: './app.component.html',
+    styles: [],
+    imports: [DashComponent, NgbNavModule, EmInfoComponent]
 })
 export class AppComponent {}

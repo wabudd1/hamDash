@@ -16,12 +16,12 @@ import { forkJoin, Observable } from 'rxjs';
 import { GraphData } from '../../models/GraphData';
 
 @Component({
-  selector: 'ham-regional-weather',
-  standalone: true,
-  imports: [NgxChartsModule, NgbPopoverModule, FormsModule],
-  templateUrl: './regional-weather.component.html',
-  styleUrl: './regional-weather.component.scss',
-  providers: [ApiService],
+    standalone: true,
+    selector: 'ham-regional-weather',
+    imports: [NgxChartsModule, NgbPopoverModule, FormsModule],
+    templateUrl: './regional-weather.component.html',
+    styleUrl: './regional-weather.component.scss',
+    providers: [ApiService]
 })
 export class RegionalWeatherComponent {
 

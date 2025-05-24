@@ -4,11 +4,10 @@ import { CommonModule } from '@angular/common';
 import { INwsRoot } from '../../models/nws/iNwsRoot';
 
 @Component({
-  selector: 'ham-alerts-modal',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './alerts-modal.component.html',
-  styleUrl: './alerts-modal.component.scss'
+    selector: 'ham-alerts-modal',
+    imports: [CommonModule],
+    templateUrl: './alerts-modal.component.html',
+    styleUrl: './alerts-modal.component.scss'
 })
 export class AlertsModalComponent {
   @Input() weatherZone!: INwsRoot;

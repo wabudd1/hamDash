@@ -5,11 +5,11 @@ import { RadioPropagationComponent } from "./radio-propagation/radio-propagation
 import { NationalWeatherComponent } from "./national-weather/national-weather.component";
 
 @Component({
-  selector: "ham-dash",
-  standalone: true,
-  imports: [NgbAccordionModule, RegionalWeatherComponent, RadioPropagationComponent, NationalWeatherComponent],
-  templateUrl: "./dash.component.html",
-  styleUrl: "./dash.component.scss"
+    standalone: true,
+    selector: "ham-dash",
+    imports: [NgbAccordionModule, RegionalWeatherComponent, RadioPropagationComponent, NationalWeatherComponent],
+    templateUrl: "./dash.component.html",
+    styleUrl: "./dash.component.scss"
 })
 export class DashComponent implements OnInit {
 
