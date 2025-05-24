@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{ weatherZone.title }} - {{ weatherZone.updated }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+    <ng-container *ngFor="let alert of weatherZone.features">
+        <div class="row">
+            <div class="col">
+                {{ alert.properties.rawMessage }}
+            </div>
+        </div>
+    </ng-container>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close('Close click')">Close</button>
+</div>

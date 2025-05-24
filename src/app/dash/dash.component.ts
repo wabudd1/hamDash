@@ -7,25 +7,33 @@ import { IEpaUvForecast } from '../models/iEpaUvForecast';
 import { GraphData } from '../models/GraphData';
 import { parse, lightFormat } from 'date-fns';
 import { GraphDatumColor } from '../models/GraphDatumColor';
-import { Constants } from '../constants';
+import { Constants, WeatherZone } from '../constants';
 import { INwsRoot } from '../models/nws/iNwsRoot';
 import convert from 'convert';
-import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { forkJoin, Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { AlertsModalComponent } from './alerts-modal/alerts-modal.component';
 
 @Component({
   selector: "ham-dash",
   standalone: true,
-  imports: [NgxChartsModule, NgbPopoverModule],
+  imports: [NgxChartsModule, NgbPopoverModule, FormsModule],
   templateUrl: "./dash.component.html",
   styleUrl: "./dash.component.scss",
   providers: [ApiService],
 })
 export class DashComponent implements OnInit {
-  private weatherZoneStations: INwsRoot[] = [];
-  public latestStationForecasts: INwsRoot[] = [];
+  public readonly weatherZones: WeatherZone[] = Constants.relevantWeatherZones;
+  public selectedWeatherZoneCode: string = "";
+  public latestStationObservations: INwsRoot[] = [];
 
   public apiDelayMinutes: number = 15;
-  public anWeatherAlert?: INwsRoot;
+
+  public weatherAlertCount: number = 0;
+  public weatherAlertTimestamp?: Date;
+  public weatherAlertZones: INwsRoot[] = [];
+
   public todayUltraviolet?: IEpaUltraviolet;
   public latestDayForecastDate: string = "";
   public hourlyUltraviolet?: IEpaUvForecast[];
@@ -58,14 +66,23 @@ export class DashComponent implements OnInit {
 
   public useImperial: boolean = true;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private modalService: NgbModal) {}
 
   public ngOnInit(): void {
     this.loadCurrentUvIndex();
     this.loadUvIndexForecast();
     this.fetchWeatherAlerts();
-    this.fetchStations();
-    this.fetchLatestObservations("KAVL");
+  }
+
+  public onObservationZoneChange(): void {
+    if (this.selectedWeatherZoneCode != null && this.selectedWeatherZoneCode.length > 0) {
+      this.fetchZoneObservations(this.selectedWeatherZoneCode);
+    }
+  }
+
+  public onAlertButtonClick(zoneAlert: INwsRoot): void {
+		const modalRef = this.modalService.open(AlertsModalComponent);
+    (modalRef.componentInstance as AlertsModalComponent).weatherZone = zoneAlert;
   }
 
   /**
@@ -300,9 +317,19 @@ export class DashComponent implements OnInit {
   private fetchWeatherAlerts(): void {
     // TODO:  SetTimeout, while loop for constant refresh
     // TODO:  Should all zones be fetched at the same time?
-    this.api.getWeatherAlerts(Constants.relevantWeatherZones[0].code).subscribe({
-      next: val => {
-        this.anWeatherAlert = val;
+    let apiCalls: Observable<INwsRoot>[] = [];
+    Constants.relevantWeatherZones.forEach(val => {
+      apiCalls.push(this.api.getWeatherAlerts(val.code));
+    });
+    forkJoin(apiCalls).subscribe({
+      next: data => {
+        this.weatherAlertZones = data;
+        let alertCount = 0;
+        data.forEach(zone => {
+          alertCount += zone.features.length;
+        });
+        this.weatherAlertCount = alertCount;
+        this.weatherAlertTimestamp = new Date();
       },
       error: err => {
         console.log(err);
@@ -311,14 +338,35 @@ export class DashComponent implements OnInit {
   }
 
   /**
-   * Fetches available stations for the Zones defined in constants.
-   * TODO:  Currently only grabs one.  Not sure how burdensome it is
-   * to be pulling ~15 stations and their observations per page load.
+   * Gets a string representation of a date, unless undefined then returns a placeholder string.
+   * Could use DatePipe but meh.
+   * @param dateToFormat Date object to format
+   * @returns Human readable date and time (24 hr) string
    */
-  private fetchStations(): void {
-    this.api.getStationsForZone(Constants.relevantWeatherZones[0].code).subscribe({
-        next: data => {
-          this.weatherZoneStations.push(data);
+  public datetoFormattedString(dateToFormat: Date | undefined): string {
+    let date = "N/A";
+    if (dateToFormat != null) {
+      date = lightFormat(dateToFormat, "MM/dd/yy HH:mm");
+    }
+    return date;
+  }
+
+  private fetchZoneObservations(zoneCode: string): void {
+    this.latestStationObservations = [];
+    this.api.getStationsForZone(zoneCode).subscribe({
+        next: stations => {
+          let apiCalls: Observable<INwsRoot>[] = [];
+          stations.features.forEach(val => {
+            apiCalls.push(this.api.getLatestStationObservation(val.properties.id));
+          });
+          forkJoin(apiCalls).subscribe({
+            next: observation => {
+              this.latestStationObservations.concat(observation);
+            },
+            error: err => {
+              console.log(err);
+            }
+          });
         },
         error: err => {
           console.log(err);
@@ -335,13 +383,13 @@ export class DashComponent implements OnInit {
   private fetchLatestObservations(stationId: string): void {
     this.api.getLatestStationObservation(stationId).subscribe({
       next: data => {
-        if (this.latestStationForecasts.length == 0) {
-          this.latestStationForecasts.push(data);
+        if (this.latestStationObservations.length == 0) {
+          this.latestStationObservations.push(data);
         }
         else {
-          let index = this.latestStationForecasts.findIndex(val => val.properties.stationIdentifier == data.properties.stationIdentifier);
+          let index = this.latestStationObservations.findIndex(val => val.properties.stationIdentifier == data.properties.stationIdentifier);
           if (index > -1) {
-            this.latestStationForecasts[index] = data;
+            this.latestStationObservations[index] = data;
           }
         }
       },

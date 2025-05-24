@@ -14,8 +14,7 @@ export class Constants {
         { name: "Northern Jackson", code: "NCZ059" },
         { name: "Southern Jackson", code: "NCZ063" },
         { name: "Swain", code: "NCZ051" },
-        { name: "Macon", code: "NCZ062" },
-
+        { name: "Macon", code: "NCZ062" }
     ]
 }
 

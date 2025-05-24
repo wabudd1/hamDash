@@ -10,6 +10,4 @@ import { EmInfoComponent } from "./em-info/em-info.component";
   styles: [],
   imports: [DashComponent, NgbNavModule, EmInfoComponent],
 })
-export class AppComponent {
-  title = 'hamDash';
-}
+export class AppComponent {}

@@ -1,38 +1,40 @@
 <div class="row text-center">
     <div class="col">
         <h1>Regional Weather</h1>
-        <div class="row">
-            <div class="col">
-                <ngx-charts-bar-vertical
-                    [view]="view"
-                    [results]="uvGraphData"
-                    [animations]="false"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [legend]="false"
-                    [showXAxisLabel]="true"
-                    [showYAxisLabel]="true"
-                    [xAxisLabel]="xAxisLabel"
-                    [yAxisLabel]="yAxisLabel"
-                    [customColors]="uvGraphColors">
-                </ngx-charts-bar-vertical>
+        
+        <div class="card">
+            <div class="card-header">
+                Active Weather Alerts:  {{ weatherAlertCount }}
             </div>
-            <div class="col">
-                Today's forecasted UV index:  <img [src]="'./assets/' + getUvIndexImage()" [alt]="'Forecasted UV Index of ' + this.todayUltraviolet?.UV_INDEX">
+            <div class="card-body" *ngIf="weatherAlertCount > 0">
+                <ng-container *ngFor="let weatherZone of weatherAlertZones">
+                    <div class="row" *ngIf="weatherZone.features.length > 0">
+                        <div class="col">
+                            <button type="button" class="btn btn-danger" (click)="onAlertButtonClick(weatherZone)">
+                                {{ weatherZone.title }}<span class="badge text-bg-secondary">{{ weatherZone.features.length }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                Active Weather Alerts:  {{ anWeatherAlert?.features?.length }} <br />
-                Last updated:  {{ formatNwsDate(anWeatherAlert?.updated) }}
+            <div class="card-body" *ngIf="weatherAlertCount == 0">
+                No weather alerts for any zone in WNC.
+            </div>
+            <div class="card-footer">
+                Last checked:  {{ datetoFormattedString(weatherAlertTimestamp) }}
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                Latest Observations
-                <ng-container *ngFor="let station of latestStationForecasts">
+                <h2>Latest Observations</h2>
+                
+                <select class="form-select" aria-label="Weather zone selection for loading observations" [(ngModel)]="selectedWeatherZoneCode" (ngModelChange)="onObservationZoneChange()">
+                    <option selected disabled value="">Select a zone</option>
+                    <option *ngFor="let zone of weatherZones" [ngValue]="zone.code">{{ zone.name }}</option>
+                </select>
+
+                <ng-container *ngFor="let station of latestStationObservations">
                     <div class="row">
                         <div class="col">
                             <table class="table table-bordered table-striped table-striped-columns">
@@ -203,6 +205,13 @@
                 </ng-container>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col">
+                <h2>Forecasts</h2>
+                
+            </div>
+        </div>
         
         <div class="row">
             <div class="col">
@@ -242,6 +251,34 @@
                         <div class="card-header">
                             I don't remember what I was going to put here.
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        UV Index Hourly Forecast
+                    </div>
+                    <div class="card-body">
+                        <ngx-charts-bar-vertical
+                            [view]="view"
+                            [results]="uvGraphData"
+                            [animations]="false"
+                            [xAxis]="true"
+                            [yAxis]="true"
+                            [legend]="false"
+                            [showXAxisLabel]="true"
+                            [showYAxisLabel]="true"
+                            [xAxisLabel]="xAxisLabel"
+                            [yAxisLabel]="yAxisLabel"
+                            [customColors]="uvGraphColors">
+                        </ngx-charts-bar-vertical>
+                    </div>
+                    <div class="card-footer">
+                        Today's forecasted UV index:  <img [src]="'./assets/' + getUvIndexImage()" [alt]="'Forecasted UV Index of ' + this.todayUltraviolet?.UV_INDEX">
                     </div>
                 </div>
             </div>
