@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { RegionalWeatherComponent } from "./regional-weather/regional-weather.component";
 import { RadioPropagationComponent } from "./radio-propagation/radio-propagation.component";
+import { NationalWeatherComponent } from "./national-weather/national-weather.component";
 
 @Component({
   selector: "ham-dash",
   standalone: true,
-  imports: [NgbAccordionModule, RegionalWeatherComponent, RadioPropagationComponent],
+  imports: [NgbAccordionModule, RegionalWeatherComponent, RadioPropagationComponent, NationalWeatherComponent],
   templateUrl: "./dash.component.html",
   styleUrl: "./dash.component.scss"
 })
