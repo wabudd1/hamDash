@@ -1,4 +1,4 @@
-<div id="regionalWeatherTop" class="row text-center">
+<div class="row text-center">
 
     <div class="col">
         <div class="card mb-3">
@@ -63,32 +63,17 @@
 </div><!-- End Row 1 -->
 
 <div class="row text-center">
-        <div class="col">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h2>UV Index Hourly Forecast</h2>
-                </div>
-                <div class="card-body">
-                    <ngx-charts-bar-vertical
-                        [view]="view"
-                        [results]="uvGraphData"
-                        [animations]="false"
-                        [xAxis]="true"
-                        [yAxis]="true"
-                        [legend]="false"
-                        [showXAxisLabel]="true"
-                        [showYAxisLabel]="true"
-                        [xAxisLabel]="xAxisLabel"
-                        [yAxisLabel]="yAxisLabel"
-                        [customColors]="uvGraphColors">
-                    </ngx-charts-bar-vertical>
-                </div>
-                <div class="card-footer">
-                    Today's forecasted UV index:  <img [src]="'./assets/' + getUvIndexImage()" [alt]="'Forecasted UV Index of ' + this.todayUltraviolet?.UV_INDEX">
-                </div>
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2>Map, Forecast</h2>
+            </div>
+            <div class="card-body">
+                <iframe width="800" height="600" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=8&overlay=wind&product=ecmwf&level=surface&lat=35.228&lon=-82.601&detailLat=35.629&detailLon=-82.599&detail=true&message=true" frameborder="0"></iframe>
             </div>
         </div>
-</div><!-- End Row 2 -->
+    </div>
+</div>
 
 <div class="row text-center">
     <div class="col">
@@ -296,12 +281,6 @@
                 </div>
             </div>
         </div>
-
         
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <a href="#regionalWeatherTop">Back to top</a>
     </div>
 </div>

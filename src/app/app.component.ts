@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
-import { DashComponent } from "./dash/dash.component";
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { EmInfoComponent } from "./em-info/em-info.component";
+import { RegionalWeatherComponent } from "./dash/regional-weather/regional-weather.component";
+import { NationalWeatherComponent } from "./dash/national-weather/national-weather.component";
+import { RadioPropagationComponent } from "./dash/radio-propagation/radio-propagation.component";
 
 @Component({
     standalone: true,
     selector: 'ham-root',
     templateUrl: './app.component.html',
     styles: [],
-    imports: [DashComponent, NgbNavModule, EmInfoComponent]
+    imports: [NgbNavModule, EmInfoComponent, RegionalWeatherComponent, NationalWeatherComponent, RadioPropagationComponent]
 })
 export class AppComponent {}

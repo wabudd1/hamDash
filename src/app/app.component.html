@@ -1,11 +1,23 @@
-<div class="container-fluid">
+<div id="topDiv" class="container-fluid">
     <div class="row">
         <div class="col">
             <ul ngbNav #nav="ngbNav" class="nav-pills my-2" [destroyOnHide]="false" >
                 <li ngbNavItem>
-                    <button type="button" ngbNavLink>Main Dashboard</button>
+                    <button type="button" ngbNavLink>Regional Weather</button>
                     <ng-template ngbNavContent>
-                        <ham-dash></ham-dash>
+                        <ham-regional-weather></ham-regional-weather>
+                    </ng-template>
+                </li>
+                <li ngbNavItem>
+                    <button type="button" ngbNavLink>National Weather</button>
+                    <ng-template ngbNavContent>
+                        <ham-national-weather></ham-national-weather>
+                    </ng-template>
+                </li>
+                <li ngbNavItem>
+                    <button type="button" ngbNavLink>Radio Propagation</button>
+                    <ng-template ngbNavContent>
+                        <ham-radio-propagation></ham-radio-propagation>
                     </ng-template>
                 </li>
                 <li ngbNavItem>
