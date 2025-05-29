@@ -226,9 +226,9 @@ export class RegionalWeatherComponent implements OnInit {
           break;
         case "Pa":
           // Usually air pressure
-          convertedUnit = convert(value, "Pa").to("best", "imperial").toString(2);
-          // let mercury = value / 133.3223684;
-          // convertedUnit = `${mercury}mmHG`;
+          // convertedUnit = convert(value, "Pa").to("best", "imperial").toString(2);
+          let mercury = value / 133.3223684;
+          convertedUnit = `${mercury}mmHG`;
           break;
         case "m":
           convertedUnit = convert(value, "m").to("best", "imperial").toString(2);
