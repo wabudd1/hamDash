@@ -1,0 +1,10 @@
+<div class="modal-header">
+    <h4 class="modal-title">Title Goes Here</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+    <img [src]="giganticImage" class="img-fluid" alt="It's so big!">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close('Close click')">Close</button>
+</div>

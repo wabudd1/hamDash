@@ -1,0 +1,61 @@
+#clock-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#clock {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1c2731;
+    background: radial-gradient(ellipse, #506068, #1c2731);
+    /*background: linear-gradient(170deg, rgba(49, 57, 73, 0.8) 20%, rgba(49, 57, 73, 0.5) 20%, rgba(49, 57, 73, 0.5) 35%, rgba(41, 48, 61, 0.6) 35%, rgba(41, 48, 61, 0.8) 45%, rgba(31, 36, 46, 0.5) 45%, rgba(31, 36, 46, 0.8) 75%, rgba(49, 57, 73, 0.5) 75%), linear-gradient(45deg, rgba(20, 24, 31, 0.8) 0%, rgba(41, 48, 61, 0.8) 50%, rgba(82, 95, 122, 0.8) 50%, rgba(133, 146, 173, 0.8) 100%) #313949;*/
+}
+
+#clock span {
+    position: absolute;
+    transform: rotate(calc(30deg * var(--i)));
+    inset: 12px;
+    text-align: center;
+}
+
+#clock span i {
+    transform: rotate(calc(-30deg * var(--j)));
+    display: inline-block;
+    font-size: 20px;
+    font-style: normal;
+    text-shadow: 1px 1px 0px rgb(0 0 0 / 25%);
+    color: #ffffff;
+}
+
+#clock::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #fff;
+    z-index: 2;
+    opacity: 0.6;
+}
+
+#clock .hand {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#clock .hand i {
+    position: absolute;
+    background-color: var(--color);
+    width: var(--width);
+    height: var(--height);
+    border-radius: 8px;
+}

@@ -1,0 +1,35 @@
+<ul class="list-group list-group-horizontal font-monospace">
+    <ng-container *ngFor="let clock of clocks; let even = even;">
+        <li class="list-group-item" [class]="clock.getListItemClass(even)">
+            {{ time | date:clock.getDateFormat():clock.timeZone }}
+            <span *ngIf="clock.showLabel"> {{ clock.getLabel(time) }}</span>
+        </li>
+    </ng-container>
+</ul>
+
+<!-- TODO:  Need to dynamically resize before this is useful.-->
+<!-- <div id="clock-container">
+    <div id="clock">
+        <div id="hour" class="hand" style="--color: #ff3d58; --height: 76px; --width: 4px" [(style.transform)]="hourTransform">
+            <i></i>
+        </div>
+        <div id="minute" class="hand" style="--color: #00a6ff; --height: 86px; --width: 3px" [(style.transform)]="minuteTransform">
+            <i></i>
+        </div>
+        <div id="second" class="hand" style="--color: #ffffff; --height: 96px; --width: 2px" [(style.transform)]="secondsTransform">
+            <i></i>
+        </div>
+        <span style="--i: 1; --j: 0"><i>|</i></span>
+        <span style="--i: 2; --j: 0"><i>|</i></span>
+        <span style="--i: 3; --j: 3"><i>3</i></span>
+        <span style="--i: 4; --j: 0"><i>|</i></span>
+        <span style="--i: 5; --j: 0"><i>|</i></span>
+        <span style="--i: 6; --j: 6"><i>6</i></span>
+        <span style="--i: 7; --j: 0"><i>|</i></span>
+        <span style="--i: 8; --j: 0"><i>|</i></span>
+        <span style="--i: 9; --j: 9"><i>9</i></span>
+        <span style="--i: 10; --j: 0"><i>|</i></span>
+        <span style="--i: 11; --j: 0"><i>|</i></span>
+        <span style="--i: 12; --j: 12"><i>12</i></span>
+    </div>
+</div> -->
