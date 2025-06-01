@@ -4,15 +4,18 @@ import { map, share, Subscription, timer } from 'rxjs';
 import { ClockInfo } from './clockInfo';
 import { TZDate } from '@date-fns/tz';
 import { TimeZones } from './timeZones';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faArrowUpRightFromSquare, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: "ham-clock",
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   templateUrl: "./clock.component.html",
   styleUrl: "./clock.component.scss",
   encapsulation: ViewEncapsulation.Emulated,
 })
 export class ClockComponent implements OnInit, OnDestroy {
+  public readonly upRightIcon: IconDefinition = faArrowUpRightFromSquare;
   public hourTransform: string = "";
   public minuteTransform: string = "";
   public secondsTransform: string = "";

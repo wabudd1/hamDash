@@ -1,10 +1,17 @@
-<div class="row">
-    <div class="col">
-        <p>
-            <a (click)="imageClick()"><img [src]="smallSource" [alt]="imageAltText"></a>
-        </p>
-        <p *ngIf="giganticSource != null && giganticSource.length > 0">
-            <a [href]="giganticSource" target="_blank">More biggerer version.</a>
-        </p>
+<div class="row mb-3">
+    <div class="col-auto">
+        <!-- TODO:  Configurable base size-->
+        <img [src]="smallSource" [alt]="imageTitle" class="img-fluid" style="max-height: 500px;">
+    </div>
+</div>
+<div class="row justify-content-between">
+    <div class="col-auto">
+        <div class="btn-group" role="group" aria-label="Button group for larger image versions">
+            <button type="button" class="btn btn-primary" (click)="imageClick()">Embiggen</button>
+            <a class="btn btn-secondary" [href]="giganticSource" target="_blank" *ngIf="giganticSource != null">Biggest version <fa-icon [icon]="upRightIcon"></fa-icon></a>
+        </div>
+    </div>
+    <div class="col-auto pt-1" *ngIf="sourceLink != null && sourceLink.length > 0">
+        <a [href]="sourceLink" target="_blank">Source <fa-icon [icon]="upRightIcon" size="sm"></fa-icon></a>
     </div>
 </div>

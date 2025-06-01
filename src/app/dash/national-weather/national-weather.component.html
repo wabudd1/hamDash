@@ -1,57 +1,39 @@
 <div class="row">
-    <div class="col">
+    <div class="col-6">
         <div class="card">
             <div class="card-header">
                 NWS CONUS RADAR Animation
             </div>
             <div class="card-body">
-                <img src="https://radar.weather.gov/ridge/standard/CONUS_loop.gif" alt="NWS CONUS Radar Animation" class="img-fluid">
+                <ham-image-handler smallSource="https://radar.weather.gov/ridge/standard/CONUS_loop.gif"
+                                   mediumSource="https://radar.weather.gov/ridge/standard/CONUS-LARGE_loop.gif"
+                                   giganticSource="https://radar.weather.gov/ridge/standard/CONUS-LARGE_loop.gif"
+                                   sourceLink="https://radar.weather.gov/"
+                                   imageTitle="NWS CONUS RADAR Animation">
+                </ham-image-handler>
             </div>
         </div>
     </div>
-    <div class="col">
+    <div class="col-6">
         <div class="card">
             <div class="card-header">
-                UV Alert Forecast (experimental)
+                UV Index Forcasts - Day {{ selectedUvForecastDay }} of {{ availableUvForecastDays.length }}
             </div>
             <div class="card-body">
-                <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uv_alert_usa.png" alt="CONUS UV Alert Map" class="img-fluid">
-            </div>
-        </div>
-    </div>
-    
-    <div class="col">
-        <div class="card">
-            <div class="card-header">
-                UV Index Forecast
-            </div>
-            <div class="card-body">
-                <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uvi_map.png" alt="CONUS UV Index Forecast" class="img-fluid">
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <div class="card">
-            <div class="card-header">
-                More UV Index Forcasts + 4 days
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-6">
-                        <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uvi_usa_f1_wmo.gif" class="img-fluid">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <div class="btn-group-vertical" role="group" aria-label="Button group for different future forecast images">
+                            <ng-container *ngFor="let dayNumber of availableUvForecastDays">
+                                <button type="button" class="btn btn-primary" (click)="onUvForecastNumberClick(dayNumber)">Day {{ dayNumber }}</button>    
+                            </ng-container>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uvi_usa_f2_wmo.gif" class="img-fluid">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uvi_usa_f3_wmo.gif" class="img-fluid">
-                    </div>
-                    <div class="col-6">
-                        <img src="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/gif_files/uvi_usa_f4_wmo.gif" class="img-fluid">
+                    <div class="col-auto">
+                        <ham-image-handler [smallSource]="activeUvForecastLink"
+                                        [mediumSource]="activeUvForecastLink"
+                                        sourceLink="https://www.cpc.ncep.noaa.gov/products/stratosphere/uv_index/"
+                                        [imageTitle]="'UV Index Forcast - Day ' + selectedUvForecastDay">
+                        </ham-image-handler>
                     </div>
                 </div>
             </div>

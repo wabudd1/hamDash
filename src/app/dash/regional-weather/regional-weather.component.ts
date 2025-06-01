@@ -13,11 +13,12 @@ import { AlertsModalComponent } from '../alerts-modal/alerts-modal.component';
 import { lightFormat, parse } from 'date-fns';
 import { convert } from 'convert';
 import { GraphData } from '../../models/GraphData';
+import { ImageHandlerComponent } from '../../image-handler/image-handler.component';
 
 @Component({
     standalone: true,
     selector: 'ham-regional-weather',
-    imports: [NgxChartsModule, NgbPopoverModule, FormsModule],
+    imports: [NgxChartsModule, NgbPopoverModule, FormsModule, ImageHandlerComponent],
     templateUrl: './regional-weather.component.html',
     styleUrl: './regional-weather.component.scss',
     providers: [ApiService]

@@ -1,11 +1,12 @@
-<ul class="list-group list-group-horizontal font-monospace">
+<div class="list-group list-group-horizontal font-monospace">
     <ng-container *ngFor="let clock of clocks; let even = even;">
-        <li class="list-group-item" [class]="clock.getListItemClass(even)">
+        <div class="list-group-item" [class]="clock.getListItemClass(even)">
             {{ time | date:clock.getDateFormat():clock.timeZone }}
             <span *ngIf="clock.showLabel"> {{ clock.getLabel(time) }}</span>
-        </li>
+        </div>
     </ng-container>
-</ul>
+    <a href="https://www.time.gov/" class="list-group-item list-group-item-action" style="width: auto;" target="_blank">NIST Time <fa-icon [icon]="upRightIcon"></fa-icon></a>
+</div>
 
 <!-- TODO:  Need to dynamically resize before this is useful.-->
 <!-- <div id="clock-container">

@@ -8,9 +8,10 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './image-modal.component.scss'
 })
 export class ImageModalComponent implements OnInit{
-  @Input({required: true}) giganticImage?: string;
+  @Input({required: true}) mediumImage?: string;
+  @Input({required: true}) imageTitle: string = "Embiggened Image"
+
   constructor(public activeModal: NgbActiveModal) {}
   ngOnInit(): void {
-    
   }
 }
